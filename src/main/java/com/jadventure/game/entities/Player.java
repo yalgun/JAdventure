@@ -175,7 +175,7 @@ public class Player extends Entity {
     // This is known as the singleton pattern. It allows for only 1 instance of a player.
     private static Player player;
     
-    public static Player getInstance(String playerClass){
+    public static Player getInstance(String playerClass,String playerRace){
         player = new Player();
         JsonParser parser = new JsonParser();
         String fileName = "json/original_data/npcs.json";
@@ -191,13 +191,21 @@ public class Player extends Entity {
 
             player.setName(json.get("name").getAsString());
             player.setHealthMax(json.get("healthMax").getAsInt());
-            player.setHealth(json.get("health").getAsInt());
+            
+            if(playerRace.equals("human"))
+               player.setHealth(json.get("health").getAsInt()+((json.get("health").getAsInt())/5));
+            else
+                player.setHealth(json.get("health").getAsInt());
+            
             player.setArmour(json.get("armour").getAsInt());
             player.setDamage(json.get("damage").getAsInt());
             player.setLevel(json.get("level").getAsInt());
             player.setXP(json.get("xp").getAsInt());
             player.setStrength(json.get("strength").getAsInt());
-            player.setIntelligence(json.get("intelligence").getAsInt());
+            if(playerRace.equals("elf"))
+                player.setIntelligence(json.get("intelligence").getAsInt()+3);
+            else
+                player.setIntelligence(json.get("intelligence").getAsInt());
             player.setDexterity(json.get("dexterity").getAsInt());
             setUpVariables(player);
             JsonArray items = json.get("items").getAsJsonArray();
@@ -205,7 +213,14 @@ public class Player extends Entity {
                 player.addItemToStorage(itemRepo.getItem(item.getAsString()));
             }
             Random rand = new Random();
-            int luck = rand.nextInt(3) + 1;
+            int luck;
+            if(playerRace.equals("dwarf")){
+                luck = rand.nextInt(3);
+                luck += luck/2;
+            }
+            else
+                luck = rand.nextInt(3) + 1;
+            
             player.setLuck(luck);
             player.setStealth(json.get("stealth").getAsInt());
             player.setIntro(json.get("intro").getAsString());
