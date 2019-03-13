@@ -19,6 +19,7 @@ public abstract class Entity {
     protected ItemRepository itemRepo = GameBeans.getItemRepository();
     
     // All entities can attack, have health, have names
+    private String Race;
     private int healthMax;
     private int health;
     private String name;
@@ -142,6 +143,10 @@ public abstract class Entity {
     public void setEquipment(Map<EquipmentLocation, Item> equipment) {
         this.equipment = equipment;
     }
+    
+    public void setRace(String raceString) {
+        this.Race = raceString;
+    }
 
     public int getStrength() {
         return strength;
@@ -185,6 +190,10 @@ public abstract class Entity {
 
     public String getWeapon() {
         return weapon;
+    }
+    
+    public String getRace() {
+        return Race;
     }
 
     public Map<String, String> equipItem(EquipmentLocation place, Item item) {

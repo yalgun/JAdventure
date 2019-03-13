@@ -122,6 +122,12 @@ public class Trading {
             if (buyer.getGold() < itemValue) {
                 return itemRepo.getItem("empty");
             }
+            if (buyer.getRace().equals("Elf")){
+                itemValue = itemValue - (itemValue/5);
+            }
+            else if ( buyer.getRace().equals("Dwarf")){
+                itemValue = itemValue + (itemValue/5);
+            }
             buyer.addItemToStorage(item);
             buyer.setGold(buyer.getGold() - itemValue);
 
