@@ -45,10 +45,20 @@ public class Game {
      */
     public void newGameStart(Player player) throws DeathException {
         QueueProvider.offer(player.getIntro());
-        String userInput = QueueProvider.take();
-        player.setName(userInput);
-        LocationRepository locationRepo = GameBeans.getLocationRepository(player.getName());
-        this.player.setLocation(locationRepo.getInitialLocation());
+        String userInput="";
+        int value=0;
+        while (value == 0 ){
+            try {
+                value = 1;
+                userInput = QueueProvider.take();
+                player.setName(userInput);
+                LocationRepository locationRepo = GameBeans.getLocationRepository(player.getName());
+                this.player.setLocation(locationRepo.getInitialLocation());
+            } catch (Exception e) {
+                QueueProvider.offer("Invalid input entered !");
+                value = 0;
+            }
+        }
         player.save();
         QueueProvider.offer("Welcome to Silliya, " + player.getName() + ".");
         player.getLocation().print();
