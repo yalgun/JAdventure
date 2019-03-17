@@ -16,9 +16,9 @@ public class Storage {
     public Storage() {
         this(WEIGHT_UNLIMITED);
     }
-	public Storage(double maxWeight) {
+        public Storage(double maxWeight) {
         this(maxWeight, new ArrayList<ItemStack>());
-	}
+        }
     public Storage(double maxWeight, List<ItemStack> items) {
         this.maxWeight = maxWeight;
         this.itemStacks = items;
