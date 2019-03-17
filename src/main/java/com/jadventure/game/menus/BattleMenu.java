@@ -23,6 +23,7 @@ public class BattleMenu extends Menus {
     private int armour;
     private double damage;
     private int escapeSuccessfulAttempts = 0;
+    private int counter = 0;
 
     public BattleMenu(NPC opponent, Player player) throws DeathException {
         this.random = new Random();
@@ -182,11 +183,14 @@ public class BattleMenu extends Menus {
         }
     }
     private void skill(Entity attacker, Entity defender) {
+    	counter++;
     	boolean k = false;
     	String skill = "";
     	Scanner s = new Scanner(System.in);
     	int bonus = 0;
     	QueueProvider.offer("Please choose a skill (1-4)");
+    	if(counter<4)
+    	QueueProvider.offer("Warning you can only use 3 times in one combat.\nIf you use more than 3 times you will get more damage from the enemy.");
     	while(k == false) {   	
     		System.out.println("[1] - Fire Ball (+9 Fire damage)");
     		System.out.println("[2] - Lightning Bolt (+10 Lightning damage)");
@@ -253,9 +257,18 @@ public class BattleMenu extends Menus {
             damage += damage;
             QueueProvider.offer("Crit hit! Damage has been doubled!");
         }
-        int healthReduction = (int) ((((3 * attacker.getLevel() / 50 + 2) *
+        int healthReduction;
+        if (attacker instanceof Monster  && counter > 3) {
+        	QueueProvider.offer("You weakened!");
+        healthReduction = (int) ((((3 * attacker.getLevel() / 50 + 2) *
                 damage * damage / (defender.getArmour() + 1)/ 100) + 2) *
-                (random.nextDouble() + 1));
+                (random.nextDouble() + 1))*(1+((counter-3)*2/10));
+        }
+        else {
+        	healthReduction = (int) ((((3 * attacker.getLevel() / 50 + 2) *
+                    damage * damage / (defender.getArmour() + 1)/ 100) + 2) *
+                    (random.nextDouble() + 1));
+        }
         defender.setHealth((defender.getHealth() - healthReduction));
         if (defender.getHealth() < 0) {
             defender.setHealth(0);
