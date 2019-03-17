@@ -10,7 +10,7 @@ import com.jadventure.game.CharacterChange;
 import com.jadventure.game.items.ItemStack;
 import com.jadventure.game.items.Item;
 import com.jadventure.game.GameBeans;
-
+import java.util.Scanner;
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
@@ -90,6 +90,8 @@ public class BattleMenu extends Menus {
     private void buildMenu() {
         this.menuItems.add(new MenuItem("Attack",
                     "Attack " + opponent.getName() + "."));
+        this.menuItems.add(new MenuItem("Skill",
+                "Choose a Skill against " + opponent.getName() + "."));
         this.menuItems.add(new MenuItem("Defend",
                     "Defend against " + opponent.getName() + "'s attack."));
         this.menuItems.add(new MenuItem("Escape",
@@ -109,6 +111,13 @@ public class BattleMenu extends Menus {
                    resetStats();
                    break;
             }
+            case "skill": {
+                mutateStats(1, 0.5);
+                skill(player, opponent);
+                attack(opponent, player);
+                resetStats();
+                break;
+         }
             case "defend": {
                    mutateStats(0.5, 1);
                    QueueProvider.offer("\nYou get ready to defend against " +
@@ -170,6 +179,67 @@ public class BattleMenu extends Menus {
             QueueProvider.offer("You failed to escape the: " +
                     attacker.getName());
             return escapeAttempts-1;
+        }
+    }
+    private void skill(Entity attacker, Entity defender) {
+    	boolean k = false;
+    	String skill = "";
+    	Scanner s = new Scanner(System.in);
+    	int bonus = 0;
+    	QueueProvider.offer("Please choose a skill (1-4)");
+    	while(k == false) {   	
+    		System.out.println("[1] - Fire Ball (+9 Fire damage)");
+    		System.out.println("[2] - Lightning Bolt (+10 Lightning damage)");
+    		System.out.println("[3] - Darkness (+7 Dark damage)");
+    		System.out.println("[4] - Holy Light (+10 Holy damage)");
+		 String pp = s.nextLine();
+		 if(pp.trim().equals("1")) {
+			 skill = "Fire Ball";
+			 k = true;
+			 bonus = 9;
+		 }
+		 else if(pp.trim().equals("2")) {
+			 skill = "Lightning Bolt";
+			 k = true;
+			 bonus = 10;
+		 }
+			 else if(pp.trim().equals("3")) {
+				 skill = "Darkness";
+				 k = true;
+				 bonus = 7;
+			 }
+				 else if(pp.trim().equals("4")) {
+					 skill = "Holy Light";
+					 k = true;
+					 bonus = 10;
+				 }
+				 else {
+					 System.out.println("Wrong input.  Please write a number between 1 and 4 \n");
+				 }
+    	
+    	}
+        if (attacker.getHealth() == 0) {
+            return;
+        }
+        double damage = attacker.getDamage();
+        double critCalc = random.nextDouble();
+        if (critCalc < attacker.getCritChance()) {
+            damage += damage;
+            QueueProvider.offer("Crit hit! Damage has been doubled!");
+        }
+        int healthReduction = (int) ((((4 * attacker.getLevel() / 50 + 2) *
+                damage * damage / (defender.getArmour() + 1)/ 100) + 2) *
+                (random.nextDouble() + 1)) + bonus;
+        defender.setHealth((defender.getHealth() - healthReduction));
+        if (defender.getHealth() < 0) {
+            defender.setHealth(0);
+        }
+        QueueProvider.offer(healthReduction + " damage dealt! by " + skill);
+        if (attacker instanceof Player) {
+            QueueProvider.offer("The " + defender.getName() + "'s health is " +
+                    defender.getHealth());
+        } else {
+            QueueProvider.offer("Your health is " + defender.getHealth());
         }
     }
 
