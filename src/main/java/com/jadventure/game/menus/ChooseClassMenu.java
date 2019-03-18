@@ -33,7 +33,7 @@ public class ChooseClassMenu extends Menus {
         while(true) {
             QueueProvider.offer("Choose a race to get started with:");
             MenuItem selectedItem = displayMenu(this.menuItems);
-            if(selectedItem.getKey().equals("dwarf")||selectedItem.getKey().equals("human")||selectedItem.getKey().equals("elf")||selectedItem.getKey().equals("Wizard")) {
+            if(selectedItem.getKey().equals("dwarf")||selectedItem.getKey().equals("human")||selectedItem.getKey().equals("elf")||selectedItem.getKey().equals("wizard")) {
                 raceString=selectedItem.getKey();
             	break;
             }

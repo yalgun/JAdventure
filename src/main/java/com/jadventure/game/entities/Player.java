@@ -188,14 +188,13 @@ public class Player extends Entity {
                     json = entry.getValue().getAsJsonObject();
                 }
             }
-            
+            player.setRace(playerRace);
             if(playerRace.equals("Wizard")) {
                 player.setMana(100);
             } 
             else {
                 player.setMana(0);
             }
-            player.setRace(playerRace);
             player.setName(json.get("name").getAsString());
             player.setHealthMax(json.get("healthMax").getAsInt());
             
