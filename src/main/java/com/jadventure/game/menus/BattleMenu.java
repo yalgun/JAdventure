@@ -91,6 +91,7 @@ public class BattleMenu extends Menus {
     private void buildMenu() {
         this.menuItems.add(new MenuItem("Attack",
                     "Attack " + opponent.getName() + "."));
+        if(player.getRace().equalsIgnoreCase("Wizard"))
         this.menuItems.add(new MenuItem("Skill",
                 "Choose a Skill against " + opponent.getName() + "."));
         this.menuItems.add(new MenuItem("Defend",
@@ -190,7 +191,7 @@ public class BattleMenu extends Menus {
     	int bonus = 0;
     	QueueProvider.offer("Please choose a skill (1-4)");
     	if(counter<4)
-    	QueueProvider.offer("Warning you can only use 3 times in one combat.\nIf you use more than 3 times you will get more damage from the enemy.");
+    	QueueProvider.offer("\nWarning you can only use 3 times in one combat.\nIf you use more than 3 times you will get more damage from the enemy.\n");
     	while(k == false) {   	
     		System.out.println("[1] - Fire Ball (+9 Fire damage)");
     		System.out.println("[2] - Lightning Bolt (+10 Lightning damage)");
