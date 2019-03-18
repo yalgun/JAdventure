@@ -20,6 +20,8 @@ public abstract class Entity {
     
     // All entities can attack, have health, have names
     private String Race;
+    private int manaMax;
+    private int mana;
     private int healthMax;
     private int health;
     private String name;
@@ -40,10 +42,11 @@ public abstract class Entity {
     protected Storage storage;
 
     public Entity() {
-    	this(100, 100, "default", 0, null, new HashMap<EquipmentLocation, Item>());
+    	this(100,100, 100, "default", 0, null, new HashMap<EquipmentLocation, Item>());
     }
     
-    public Entity(int healthMax, int health, String name, int gold, Storage storage, Map<EquipmentLocation, Item> equipment) {
+    public Entity(int manaMax,int healthMax, int health, String name, int gold, Storage storage, Map<EquipmentLocation, Item> equipment) {
+        this.manaMax=manaMax;
         this.healthMax = healthMax;
         this.health = health;
         this.name = name;
@@ -67,6 +70,27 @@ public abstract class Entity {
             health = healthMax;
         }
         this.health = health;
+    }
+    
+    public int getmanaMax() {
+        return this.mana;
+    }
+    
+    public void setMana(int mana) {
+        if (mana > manaMax){
+            mana = manaMax;
+        }
+        if ( Race.equals("Wizard")) {
+            this.mana = mana;
+        }
+    }
+    
+    public boolean useMana(int amount) {
+        if (amount > mana){
+            return false;
+        }
+        mana-= amount;
+        return true;
     }
 
     public int getGold() {

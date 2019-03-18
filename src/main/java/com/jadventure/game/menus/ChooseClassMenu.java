@@ -28,11 +28,12 @@ public class ChooseClassMenu extends Menus {
         this.menuItems.clear();
         this.menuItems.add(new MenuItem("Dwarf", "%50 additional luck"));
         this.menuItems.add(new MenuItem("Human", "%20 additional health"));
-        this.menuItems.add(new MenuItem("Elf", "additional intelligence"));
+        this.menuItems.add(new MenuItem("Elf", "Additional intelligence"));
+        this.menuItems.add(new MenuItem("Wizard", "Spell ability"));
         while(true) {
             QueueProvider.offer("Choose a race to get started with:");
             MenuItem selectedItem = displayMenu(this.menuItems);
-            if(selectedItem.getKey().equals("dwarf")||selectedItem.getKey().equals("human")||selectedItem.getKey().equals("elf")) {
+            if(selectedItem.getKey().equals("dwarf")||selectedItem.getKey().equals("human")||selectedItem.getKey().equals("elf")||selectedItem.getKey().equals("Wizard")) {
                 raceString=selectedItem.getKey();
             	break;
             }
