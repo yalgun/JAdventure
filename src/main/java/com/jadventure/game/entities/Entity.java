@@ -48,7 +48,6 @@ public abstract class Entity {
     public Entity(int manaMax,int healthMax, int health, String name, int gold, Storage storage, Map<EquipmentLocation, Item> equipment) {
         this.manaMax=manaMax;
         this.healthMax = healthMax;
-        this.mana = health;
         this.health = health;
         this.name = name;
         this.gold = gold;
@@ -74,18 +73,7 @@ public abstract class Entity {
     }
     
     public int getmanaMax() {
-        return this.manaMax;
-    }
-    
-    public int getMana() {
-    	return this.mana;
-    }
-    
-    public void setmanaMax(int manaMax) {
-        this.manaMax = manaMax;
-        if (mana > manaMax) {
-            mana = manaMax;
-        }
+        return this.mana;
     }
     
     public void setMana(int mana) {

@@ -110,11 +110,8 @@ public class Player extends Entity {
             Reader reader = new FileReader(fileName);
             JsonObject json = parser.parse(reader).getAsJsonObject();
             player.setName(json.get("name").getAsString());
-            player.setRace(json.get("Race").getAsString());
             player.setHealthMax(json.get("healthMax").getAsInt());
             player.setHealth(json.get("health").getAsInt());
-            player.setmanaMax(json.get("manaMax").getAsInt());
-            player.setMana(json.get("mana").getAsInt());
             player.setArmour(json.get("armour").getAsInt());
             player.setDamage(json.get("damage").getAsInt());
             player.setLevel(json.get("level").getAsInt());
@@ -275,7 +272,6 @@ public class Player extends Entity {
               message += "\nCurrent weapon: " + weaponName;
               message += "\nGold: " + getGold();
               message += "\nHealth/Max: " + getHealth() + "/" + getHealthMax();
-              message += "\nMana/Max: " + getMana() + "/" + getmanaMax();
               message += "\nDamage/Armour: " + getDamage() + "/" + getArmour();
               message += "\nStrength: " + getStrength();
               message += "\nIntelligence: " + getIntelligence();
@@ -295,11 +291,8 @@ public class Player extends Entity {
         Gson gson = new Gson();
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("name", getName());
-        jsonObject.addProperty("Race", getRace());
         jsonObject.addProperty("healthMax", getHealthMax());
         jsonObject.addProperty("health", getHealthMax());
-        jsonObject.addProperty("manaMax", getmanaMax());
-        jsonObject.addProperty("mana", getMana());
         jsonObject.addProperty("armour", getArmour());
         jsonObject.addProperty("damage", getDamage());
         jsonObject.addProperty("level", getLevel());
