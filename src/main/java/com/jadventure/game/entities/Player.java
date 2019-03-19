@@ -272,6 +272,7 @@ public class Player extends Entity {
         }
         String message = "\nPlayer name: " + getName();
               message += "\nType: " + type;
+              message += "\nRace: " + getRace();
               message += "\nCurrent weapon: " + weaponName;
               message += "\nGold: " + getGold();
               message += "\nHealth/Max: " + getHealth() + "/" + getHealthMax();
