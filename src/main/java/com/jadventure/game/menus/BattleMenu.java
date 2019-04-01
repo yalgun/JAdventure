@@ -57,6 +57,7 @@ public class BattleMenu extends Menus {
             int oldLevel = this.player.getLevel();
             int newLevel = (int) (0.075 * Math.sqrt(this.player.getXP()) + 1);
             this.player.setLevel(newLevel);
+            this.player.setPetEnergy(this.player.getPetEnergy()+1);
 
             // Iterates over the opponent's items and if there are any, drops them.
             // There are two loops due to a ConcurrentModification Exception that occurs
@@ -81,6 +82,7 @@ public class BattleMenu extends Menus {
                     "\nYou have gained " + xp + " XP and " +
                     opponent.getGold() + " gold");
             if (oldLevel < newLevel) {
+            	this.player.setPetDamage(this.player.getPetDamage() + newLevel);
                 QueueProvider.offer("You've are now level " + newLevel + "!");
             }
             CharacterChange cc = new CharacterChange();
@@ -94,6 +96,9 @@ public class BattleMenu extends Menus {
         if(player.getRace().equalsIgnoreCase("Wizard"))
         this.menuItems.add(new MenuItem("Skill",
                 "Choose a Skill against " + opponent.getName() + "."));
+        if(player.getPetEnergy()>0)
+        this.menuItems.add(new MenuItem("Attack With Pet",
+                "Choose a Style against " + opponent.getName() + "."));
         this.menuItems.add(new MenuItem("Defend",
                     "Defend against " + opponent.getName() + "'s attack."));
         this.menuItems.add(new MenuItem("Escape",
@@ -120,6 +125,13 @@ public class BattleMenu extends Menus {
                 resetStats();
                 break;
          }
+            case "attack with pet":{
+                mutateStats(1, 0.5);
+                attackWithPet(player, opponent);
+                attack(opponent, player);
+                resetStats();
+                break;  
+            }
             case "defend": {
                    mutateStats(0.5, 1);
                    QueueProvider.offer("\nYou get ready to defend against " +
@@ -183,6 +195,7 @@ public class BattleMenu extends Menus {
             return escapeAttempts-1;
         }
     }
+    
     private void skill(Entity attacker, Entity defender) {
     	counter++;
     	boolean k = false;
@@ -247,6 +260,81 @@ public class BattleMenu extends Menus {
             QueueProvider.offer("Your health is " + defender.getHealth());
         }
     }
+    //attack with pet starts
+    private void attackWithPet(Entity attacker, Entity defender) {
+    	//System.out.println("attackers name and his pets energy: "+ attacker.getName() + attacker.getPetEnergy());
+    	counter++;
+    	boolean b = false;
+    	String style = "";
+    	Scanner s = new Scanner(System.in);
+    	int bonusDamage = 0;
+    	QueueProvider.offer("Please choose a Style (1-3)");
+    	//if(counter<4)
+    	//QueueProvider.offer("\nWarning you can only use 3 times in one combat.\nIf you use more than 3 times you will get more damage from the enemy.\n");
+    	while(b == false) {   	
+    		System.out.println("[1] - Fast Attack (cost 1 Energy bar)");
+    		System.out.println("[2] - Confusion Attack (cost 1 Energy bar)");
+    		if(attacker.getPetEnergy()>1) {
+    		System.out.println("[3] - Charge Attack (It uses 2 Energy bar from your pet)");
+    		}else {
+    		System.out.println("Your pet has not enough energy to use Charge Attack");
+    		}
+		 String r = s.nextLine();
+		 if(attacker.getPetEnergy() == 0) {
+	    	 bonusDamage = 0;
+	    	 System.out.println("Your pet has not enugoh energy to attack with you, you will attack alone\n");
+	    	 b = true;
+	    	 bonusDamage = 0;
+	     }
+		 else if(r.trim().equals("1") && attacker.getPetEnergy() > 0) {
+			 style = "Fast Attack";
+			 b = true;
+			 bonusDamage = attacker.getPetDamage();
+			 attacker.setPetEnergy(attacker.getPetEnergy()-1);
+		 }
+	     else if(r.trim().equals("2") && attacker.getPetEnergy() > 0) {
+			 style = "Confusion Attack";
+			 b = true;
+			 bonusDamage = attacker.getPetDamage();
+			 attacker.setPetEnergy(attacker.getPetEnergy()-1);
+		 }
+		 else if(r.trim().equals("3") && attacker.getPetEnergy() > 1) {
+				 style = "Charge Attack";
+				 b = true;
+				 bonusDamage = (int)(attacker.getPetDamage()*3/2);
+				 attacker.setPetEnergy(attacker.getPetEnergy()-2);
+	     }
+		 else {
+			System.out.println("Wrong input.  Please write a number between 1 and 3 \n");
+	     }
+    	
+    	}
+        if (attacker.getHealth() == 0) {
+            return;
+        }
+        double damage = attacker.getDamage();
+        double critCalc = random.nextDouble();
+        if (critCalc < attacker.getCritChance()) {
+            damage += damage;
+            QueueProvider.offer("Crit hit! Damage has been doubled!");
+        }
+        int healthReduction = (int) ((((4 * attacker.getLevel() / 50 + 2) *
+                damage * damage / (defender.getArmour() + 1)/ 100) + 2) *
+                (random.nextDouble() + 1)) + bonusDamage;
+        defender.setHealth((defender.getHealth() - healthReduction));
+        if (defender.getHealth() < 0) {
+            defender.setHealth(0);
+        }
+        QueueProvider.offer(healthReduction + " damage dealt! by " + style);
+        if (attacker instanceof Player) {
+            QueueProvider.offer("The " + defender.getName() + "'s health is " +
+                    defender.getHealth());
+        } else {
+            QueueProvider.offer("Your health is " + defender.getHealth());
+        }
+    }
+    //attack with pet ends
+    
 
     private void attack(Entity attacker, Entity defender) {
         if (attacker.getHealth() == 0) {

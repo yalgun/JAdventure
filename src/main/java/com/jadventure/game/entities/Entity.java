@@ -20,6 +20,10 @@ public abstract class Entity {
     
     // All entities can attack, have health, have names
     private String Race;
+    private String Pet;
+    private boolean hasPet;
+    private int petDamage;
+    private int petEnergy;
     private int manaMax;
     private int mana;
     private int healthMax;
@@ -182,6 +186,35 @@ public abstract class Entity {
     
     public void setRace(String raceString) {
         this.Race = raceString;
+    }
+    public void setPet(String petString) {
+    	this.Pet = petString;
+    }
+    public String getPet() {
+    	return Pet;
+    }
+    public void setPetDamage(int petDamage) {
+    	this.petDamage = petDamage;
+    }
+    public int getPetDamage() {
+    	return petDamage;
+    }
+    public void setHasPet(boolean hasPet) {
+    	this.hasPet = hasPet;
+    }
+    public boolean getHasPet() {
+    	return hasPet;
+    }
+    public void setPetEnergy(int petEnergy) {
+    	if(petEnergy > 10) {
+    		petEnergy = 10;
+    	}else if(petEnergy < 0) {
+    		petEnergy = 0;
+    	}
+    	this.petEnergy = petEnergy;
+    }
+    public int getPetEnergy() {
+    	return petEnergy;
     }
 
     public int getStrength() {
@@ -390,6 +423,13 @@ public abstract class Entity {
 
     public void removeItemFromStorage(Item item) {
         storage.removeItem(new ItemStack(1, item)); 
+    }
+    
+    public void printPet() {
+    	System.out.println("An Adorable "+ this.getPet() + ".");
+    	if(this.getPetEnergy() < 5)
+    		System.out.println("The " + this.getPet() + " seems exhausted.");
+    	System.out.println(this.getPet() + " has "+ this.getPetEnergy() + " energy.");
     }
 
 }

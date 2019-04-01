@@ -14,6 +14,7 @@ public class ChooseClassMenu extends Menus {
     public ChooseClassMenu() throws DeathException {
         String classString;
         String raceString;
+        String petString;
         this.menuItems.add(new MenuItem("Recruit", "A soldier newly enlisted to guard the city of Silliya"));
         this.menuItems.add(new MenuItem("SewerRat", "A member of the underground of Silliya"));
         
@@ -39,12 +40,28 @@ public class ChooseClassMenu extends Menus {
             }
         }
         
+        //petStart
+        this.menuItems.clear();
+        this.menuItems.add(new MenuItem("Hawk", "The Protector of the sky"));
+        this.menuItems.add(new MenuItem("Wolf", "The Leader of the herd"));
+        this.menuItems.add(new MenuItem("Leopard", "The Legend of the Earth"));
+        while(true) {
+            QueueProvider.offer("Choose a pet to get started with:");
+            MenuItem selectedItem = displayMenu(this.menuItems);
+            //System.out.println("the key is " +selectedItem.getKey());
+            if(selectedItem.getKey().equals("hawk")||selectedItem.getKey().equals("wolf")||selectedItem.getKey().equals("leopard")) {
+                petString=selectedItem.getKey();
+            	break;
+            }
+        }
+        //pet end
+        
         //System.out.println(classString+" "+ raceString);
-        build(classString,raceString);
+        build(classString,raceString,petString);
     }
     
-    private static void build(String sinif,String irk) throws DeathException{
-        Player player = Player.getInstance(sinif, irk);
+    private static void build(String sinif,String irk, String pet) throws DeathException{
+        Player player = Player.getInstance(sinif, irk, pet);
         new Game(player, "new");
     }
 }

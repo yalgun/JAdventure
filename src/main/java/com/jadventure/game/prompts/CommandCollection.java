@@ -189,7 +189,7 @@ public enum CommandCollection {
         player.dequipItem(arg.trim());
     }
 
-    @Command(command="view", aliases="v", description="View details for 'stats', 'equipped' or 'backpack'", debug=false)
+    @Command(command="view", aliases="v", description="View details for 'stats', 'equipped', 'backpack' or 'lookpet' ", debug=false)
     public void command_v(String arg) {
         arg = arg.trim();
         switch (arg) {
@@ -205,6 +205,10 @@ public enum CommandCollection {
             case "backpack":
                 player.printStorage();
                 break;
+            case "lp":
+            case "lookpet":
+            	player.printPet();
+            	break;
             default:
                 QueueProvider.offer("That is not a valid display");
                 break;

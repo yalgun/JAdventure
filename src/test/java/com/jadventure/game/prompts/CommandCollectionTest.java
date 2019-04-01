@@ -42,7 +42,7 @@ public class CommandCollectionTest {
         location = new Location(coordinate, title, description, locationType);
         location.setDangerRating(5);
 
-        player = Player.getInstance("recruit","Elf");
+        player = Player.getInstance("recruit","Elf","hawk");
         player.setLevel(1);
         player.setLocation(location);
 

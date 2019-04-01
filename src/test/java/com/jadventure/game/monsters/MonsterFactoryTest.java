@@ -20,7 +20,7 @@ public class MonsterFactoryTest {
 
     @Before
     public void setUp(){
-        player = Player.getInstance("recruit","Dwarf");
+        player = Player.getInstance("recruit","Dwarf","wolf");
 
         Coordinate coordinate = new Coordinate(1, 1, 0);
         String title = "At the edge of a forest";
