@@ -94,7 +94,14 @@ public class Pet extends Entity{
 	 
 	 public void setPetHealth(int petHealth) {
 		 this.petHealth = petHealth;
-		 if(this.petHealth < 0) {
+		 if(this.petHealth > 100) {
+			 this.petHealth = 100;
+		 }
+		 if(this.petHealth <= 0) {
+			 
+			 this.petHealth = 0;
+			 setPetEnergy(0);
+			 setPetDamage(0);
 			 setHasPet(false);
 		 }
 	 }

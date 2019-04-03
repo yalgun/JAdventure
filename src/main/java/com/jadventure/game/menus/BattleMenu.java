@@ -58,6 +58,19 @@ public class BattleMenu extends Menus {
             int newLevel = (int) (0.075 * Math.sqrt(this.player.getXP()) + 1);
             this.player.setLevel(newLevel);
             this.player.getPet().setPetEnergy(this.player.getPet().getPetEnergy()+1);
+            
+            if( this.player.getPet().getHasPet()) {
+              int tempPetH = this.player.getPet().getPetHealth();	
+              this.player.getPet().setPetHealth(this.player.getPet().getPetHealth()+5);
+              if( ( (this.player.getPet().getPetHealth()) - tempPetH ) < 5 && ( (this.player.getPet().getPetHealth()) - tempPetH ) > 0 ) {
+            	QueueProvider.offer(this.player.getPet().getPetName() + " recovered " + ( (this.player.getPet().getPetHealth()) - tempPetH )  + " health!");
+            
+              }else if (( (this.player.getPet().getPetHealth()) - tempPetH ) == 0) {
+            	QueueProvider.offer(this.player.getPet().getPetName() + " already has maximum health!");
+              }else {// your pet recover 5 health
+             	QueueProvider.offer(this.player.getPet().getPetName() + " recovered 5 health!");
+              }
+            }
             this.player.setMana(player.getMana()+10);
 
             // Iterates over the opponent's items and if there are any, drops them.
@@ -136,7 +149,11 @@ public class BattleMenu extends Menus {
                 resetStats();
                 break;  
                 }else {
+                	if(player.getPet().getPetHealth() < 1) {
+                	System.out.println("Your pet is already dead! so you will attack alone!");	
+                	}else {
                 	System.out.println("Your pet has not enough energy, so you will attack alone!");
+                	}
                 	 mutateStats(1, 0.5);
                      attack(player, opponent);
                      attack(opponent, player);
@@ -400,16 +417,21 @@ public class BattleMenu extends Menus {
         int healthReduction = (int) ((((4 * attacker.getLevel() / 50 + 2) *
                 damage * damage / (defender.getArmour() + 1)/ 100) + 2) *
                 (random.nextDouble() + 1)) + bonusDamage;
-        defender.setHealth((defender.getHealth() - healthReduction));
+       
+        
         if (defender.getHealth() < 0) {
             defender.setHealth(0);
         }
-        QueueProvider.offer(healthReduction + " damage dealt! by " + style);
+        
+               
+        QueueProvider.offer("Total " + healthReduction + " damage dealt! by " + style);
         if (attacker instanceof Player) {
             QueueProvider.offer("The " + defender.getName() + "'s health is " +
                     defender.getHealth());
         } else {
+        	
             QueueProvider.offer("Your health is " + defender.getHealth());
+           
         }
     }
     //attack with pet ends
@@ -437,16 +459,96 @@ public class BattleMenu extends Menus {
                     damage * damage / (defender.getArmour() + 1)/ 100) + 2) *
                     (random.nextDouble() + 1));
         }
-        defender.setHealth((defender.getHealth() - healthReduction));
+        
+        
+        int fromPlayer=0;
+		int fromPet=0;
+        boolean damageToPet=false;
+        if(defender instanceof Player) {
+       	 if(defender.getPet().getHasPet()) {
+       		 int randomPercentage =(int)(Math.random()*4);
+       		
+       		
+       		 switch (randomPercentage) {
+       		 case 0:{
+       			 double tempHealthReduction = 0;
+       			 tempHealthReduction = healthReduction;
+       			 fromPlayer = (int)(tempHealthReduction*90/100);
+       			 fromPet = (int)(tempHealthReduction*10/100);        			 
+       			 break;
+       		 }
+       		 case 1:{
+       			 double tempHealthReduction = 0;
+       			 tempHealthReduction = healthReduction;
+       			 fromPlayer = (int)(tempHealthReduction*85/100);
+       			 fromPet = (int)(tempHealthReduction*15/100);        			 
+       			 break;
+       		 }
+       		 case 2:{
+       			 double tempHealthReduction = 0;
+       			 tempHealthReduction = healthReduction;
+       			 fromPlayer = (int)(tempHealthReduction*80/100);
+       			 fromPet = (int)(tempHealthReduction*20/100);        			 
+       			 break;
+       		 }
+       		 case 3:{
+       			 double tempHealthReduction = 0;
+       			 tempHealthReduction = healthReduction;
+       			 fromPlayer = (int)(tempHealthReduction*75/100);
+       			 fromPet = (int)(tempHealthReduction*25/100);        			 
+       			 break;
+       		 }
+       		 default:
+       			 fromPlayer = healthReduction;
+       	         break;
+       		 }//switch ends
+       		 defender.setHealth((defender.getHealth() - fromPlayer));
+       		 defender.getPet().setPetHealth((defender.getPet().getPetHealth() - fromPet));
+       		 damageToPet = true;
+       	 }else {// has not have a pet
+       	  defender.setHealth((defender.getHealth() - healthReduction));
+       	  damageToPet = false;
+       	 }
+        }else {
+       	  defender.setHealth((defender.getHealth() - healthReduction));
+        }
+
+        //defender.setHealth((defender.getHealth() - healthReduction));
+                       
         if (defender.getHealth() < 0) {
             defender.setHealth(0);
         }
+      
         QueueProvider.offer(healthReduction + " damage dealt!");
+        
+        //when pet Dies
+        if (defender instanceof Player) {        	
+        	if(defender.getPet().getPetHealth()<1) {
+        		defender.getPet().setPetHealth(0);
+        		if((fromPet >= 0) && damageToPet) {
+        			QueueProvider.offer(defender.getPet().getPetName() + " is take "+ fromPet + " damage!");
+        			QueueProvider.offer(defender.getPet().getPetName() + " is died! ");
+        			QueueProvider.offer("you are take "+ fromPlayer + " damage!");
+        		}        		
+        	}else if(damageToPet) {
+        		QueueProvider.offer(defender.getPet().getPetName() + " is take "+ fromPet + " damage!");
+        		QueueProvider.offer("You are take "+ fromPlayer + " damage!");
+        	}
+        }       
+        //when pet Dies       
+       
         if (attacker instanceof Player) {
             QueueProvider.offer("The " + defender.getName() + "'s health is " +
                     defender.getHealth());
         } else {
             QueueProvider.offer("Your health is " + defender.getHealth());
+            
+            if(defender instanceof Player) {
+            	if(defender.getPet().getHasPet()) {
+                 QueueProvider.offer("Your pet's health is " + defender.getPet().getPetHealth());
+            	}
+            }
+           
         }
     }
 
