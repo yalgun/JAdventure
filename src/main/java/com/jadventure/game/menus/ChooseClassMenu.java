@@ -55,13 +55,24 @@ public class ChooseClassMenu extends Menus {
             }
         }
         //pet end
+        //select a pet name START
+        String selectedPetName = "";
+        while(true) {
+        	
+        	QueueProvider.offer("Select a name for your pet");
+        	if(selectedPetName == "") {          
+            selectedPetName = QueueProvider.take();           
+            break;
+        	}
+        }
+        //select a pet name End
         
         //System.out.println(classString+" "+ raceString);
-        build(classString,raceString,petString);
+        build(classString,raceString,petString,selectedPetName);
     }
     
-    private static void build(String sinif,String irk, String pet) throws DeathException{
-        Player player = Player.getInstance(sinif, irk, pet);
+    private static void build(String sinif,String irk, String pet, String selectedPetName) throws DeathException{
+        Player player = Player.getInstance(sinif, irk, pet, selectedPetName);
         new Game(player, "new");
     }
 }

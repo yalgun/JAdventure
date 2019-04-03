@@ -16,7 +16,7 @@ public class PlayerTest {
 
     @Test
     public void newRecruit() {
-        Player player = Player.getInstance("recruit","Elf","leopard");
+        Player player = Player.getInstance("recruit","Elf","leopard","leopardie");
         int expected = 1;
         int actual = player.getArmour();
         assertEquals("Failure - new recruit not properly created", expected, actual);
@@ -24,7 +24,7 @@ public class PlayerTest {
 
     @Test
     public void newSewerRat() {
-        Player player = Player.getInstance("sewerrat","Dwarf","hawk");
+        Player player = Player.getInstance("sewerrat","Dwarf","hawk","hawkie");
         int expected = 0;
         int actual = player.getArmour();
         assertEquals("Failure - new sewer rat not properly created", expected, actual);

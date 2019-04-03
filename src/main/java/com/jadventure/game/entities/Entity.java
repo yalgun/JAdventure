@@ -20,10 +20,7 @@ public abstract class Entity {
     
     // All entities can attack, have health, have names
     private String Race;
-    private String Pet;
-    private boolean hasPet;
-    private int petDamage;
-    private int petEnergy;
+    private Pet playersPet;
     private int manaMax;
     private int mana;
     private int healthMax;
@@ -187,34 +184,11 @@ public abstract class Entity {
     public void setRace(String raceString) {
         this.Race = raceString;
     }
-    public void setPet(String petString) {
-    	this.Pet = petString;
+    public Pet getPet() {
+    	return playersPet;
     }
-    public String getPet() {
-    	return Pet;
-    }
-    public void setPetDamage(int petDamage) {
-    	this.petDamage = petDamage;
-    }
-    public int getPetDamage() {
-    	return petDamage;
-    }
-    public void setHasPet(boolean hasPet) {
-    	this.hasPet = hasPet;
-    }
-    public boolean getHasPet() {
-    	return hasPet;
-    }
-    public void setPetEnergy(int petEnergy) {
-    	if(petEnergy > 10) {
-    		petEnergy = 10;
-    	}else if(petEnergy < 0) {
-    		petEnergy = 0;
-    	}
-    	this.petEnergy = petEnergy;
-    }
-    public int getPetEnergy() {
-    	return petEnergy;
+    public void setPet(String petType, boolean hasPet, int petDamage, int petEnergy, int petHealth, String petName) {
+    	this.playersPet = new Pet(petType, hasPet, petDamage, petEnergy, petHealth, petName);
     }
 
     public int getStrength() {
@@ -426,10 +400,26 @@ public abstract class Entity {
     }
     
     public void printPet() {
-    	System.out.println("An Adorable "+ this.getPet() + ".");
-    	if(this.getPetEnergy() < 5)
-    		System.out.println("The " + this.getPet() + " seems exhausted.");
-    	System.out.println(this.getPet() + " has "+ this.getPetEnergy() + " energy.");
+    	
+    	if(this.getPet().getHasPet()) {   	
+    	System.out.println("An Adorable "+ this.getPet().getPetType() + ".");
+    	if(this.getPet().getPetEnergy() < 5)
+    		System.out.println("The " + this.getPet().getPetName() + " seems exhausted.");
+    	System.out.println(this.getPet().getPetName() + " has "+ this.getPet().getPetEnergy() + " energy.");
+    	}else {//otherwise your pet already dead or you do not have any pet
+    		System.out.println("Unfortunately you are alone, you do not have any pet!");
+    	}
+    }
+    public void printPetStats() {
+    	if(this.getPet().getHasPet()) {
+    		System.out.println("Pet name   : "+ this.getPet().getPetName());
+    		System.out.println("Type       : "+ this.getPet().getPetType());
+    		System.out.println("Health     : "+ this.getPet().getPetHealth());
+    		System.out.println("Energy     : "+ this.getPet().getPetEnergy());
+    		System.out.println("Damage     : "+ this.getPet().getPetDamage());
+    	}else {
+    		System.out.println("Unfortunately you are alone, you do not have any pet!");
+    	}
     }
 
 }

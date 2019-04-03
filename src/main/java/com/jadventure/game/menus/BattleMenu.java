@@ -57,7 +57,7 @@ public class BattleMenu extends Menus {
             int oldLevel = this.player.getLevel();
             int newLevel = (int) (0.075 * Math.sqrt(this.player.getXP()) + 1);
             this.player.setLevel(newLevel);
-            this.player.setPetEnergy(this.player.getPetEnergy()+1);
+            this.player.getPet().setPetEnergy(this.player.getPet().getPetEnergy()+1);
 
             // Iterates over the opponent's items and if there are any, drops them.
             // There are two loops due to a ConcurrentModification Exception that occurs
@@ -82,7 +82,7 @@ public class BattleMenu extends Menus {
                     "\nYou have gained " + xp + " XP and " +
                     opponent.getGold() + " gold");
             if (oldLevel < newLevel) {
-            	this.player.setPetDamage(this.player.getPetDamage() + newLevel);
+            	this.player.getPet().setPetDamage(this.player.getPet().getPetDamage() + newLevel);
                 QueueProvider.offer("You've are now level " + newLevel + "!");
             }
             CharacterChange cc = new CharacterChange();
@@ -96,9 +96,10 @@ public class BattleMenu extends Menus {
         if(player.getRace().equalsIgnoreCase("Wizard"))
         this.menuItems.add(new MenuItem("Skill",
                 "Choose a Skill against " + opponent.getName() + "."));
-        if(player.getPetEnergy()>0)
+        if(player.getPet().getPetEnergy()>0) {
         this.menuItems.add(new MenuItem("Attack With Pet",
                 "Choose a Style against " + opponent.getName() + "."));
+        }
         this.menuItems.add(new MenuItem("Defend",
                     "Defend against " + opponent.getName() + "'s attack."));
         this.menuItems.add(new MenuItem("Escape",
@@ -126,11 +127,21 @@ public class BattleMenu extends Menus {
                 break;
          }
             case "attack with pet":{
+            	if(player.getPet().getPetEnergy()>0) {
                 mutateStats(1, 0.5);
                 attackWithPet(player, opponent);
                 attack(opponent, player);
                 resetStats();
                 break;  
+                }else {
+                	System.out.println("Your pet has not enough energy, so you will attack alone!");
+                	 mutateStats(1, 0.5);
+                     attack(player, opponent);
+                     attack(opponent, player);
+                     resetStats();
+                     break;
+                }
+                
             }
             case "defend": {
                    mutateStats(0.5, 1);
@@ -274,38 +285,42 @@ public class BattleMenu extends Menus {
     	while(b == false) {   	
     		System.out.println("[1] - Fast Attack (cost 1 Energy bar)");
     		System.out.println("[2] - Confusion Attack (cost 1 Energy bar)");
-    		if(attacker.getPetEnergy()>1) {
+    		if(attacker.getPet().getPetEnergy()>1) {
     		System.out.println("[3] - Charge Attack (It uses 2 Energy bar from your pet)");
     		}else {
     		System.out.println("Your pet has not enough energy to use Charge Attack");
     		}
 		 String r = s.nextLine();
-		 if(attacker.getPetEnergy() == 0) {
+		 if(attacker.getPet().getPetEnergy() == 0) {
 	    	 bonusDamage = 0;
-	    	 System.out.println("Your pet has not enugoh energy to attack with you, you will attack alone\n");
+	    	 System.out.println("Your pet has not enough energy to attack with you, you will attack alone\n");
 	    	 b = true;
 	    	 bonusDamage = 0;
 	     }
-		 else if(r.trim().equals("1") && attacker.getPetEnergy() > 0) {
+		 else if(r.trim().equals("1") && attacker.getPet().getPetEnergy() > 0) {
 			 style = "Fast Attack";
 			 b = true;
-			 bonusDamage = attacker.getPetDamage();
-			 attacker.setPetEnergy(attacker.getPetEnergy()-1);
+			 bonusDamage = attacker.getPet().getPetDamage();
+			 attacker.getPet().setPetEnergy(attacker.getPet().getPetEnergy()-1);
 		 }
-	     else if(r.trim().equals("2") && attacker.getPetEnergy() > 0) {
+	     else if(r.trim().equals("2") && attacker.getPet().getPetEnergy() > 0) {
 			 style = "Confusion Attack";
 			 b = true;
-			 bonusDamage = attacker.getPetDamage();
-			 attacker.setPetEnergy(attacker.getPetEnergy()-1);
+			 bonusDamage = attacker.getPet().getPetDamage();
+			 attacker.getPet().setPetEnergy(attacker.getPet().getPetEnergy()-1);
 		 }
-		 else if(r.trim().equals("3") && attacker.getPetEnergy() > 1) {
+		 else if(r.trim().equals("3") && attacker.getPet().getPetEnergy() > 1) {
 				 style = "Charge Attack";
 				 b = true;
-				 bonusDamage = (int)(attacker.getPetDamage()*3/2);
-				 attacker.setPetEnergy(attacker.getPetEnergy()-2);
+				 bonusDamage = (int)(attacker.getPet().getPetDamage()*3/2);
+				 attacker.getPet().setPetEnergy(attacker.getPet().getPetEnergy()-2);
 	     }
 		 else {
+			if(attacker.getPet().getPetEnergy() > 1) {
 			System.out.println("Wrong input.  Please write a number between 1 and 3 \n");
+			}else {
+		    System.out.println("Wrong input.  Please write a number between 1 and 2 \n");	
+			}
 	     }
     	
     	}
@@ -403,7 +418,7 @@ public class BattleMenu extends Menus {
 
     private void viewStats() {
         QueueProvider.offer("\nWhat is your command? ex. View stats(vs), " +
-                "View Backpack(vb), View Equipment(ve) ");
+                "View Backpack(vb), View Equipment(ve) , View petstats(ps)");
         String input = QueueProvider.take();
         switch (input) {
             case "vs":
@@ -421,6 +436,10 @@ public class BattleMenu extends Menus {
             case "back":
             case "exit":
                 break;
+            case "petstats":
+            case "ps":
+            	player.printPetStats();
+            	break;
             default:
                 viewStats();
                 break;

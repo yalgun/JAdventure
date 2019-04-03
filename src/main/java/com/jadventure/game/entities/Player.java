@@ -111,10 +111,17 @@ public class Player extends Entity {
             JsonObject json = parser.parse(reader).getAsJsonObject();
             player.setName(json.get("name").getAsString());
             player.setRace(json.get("Race").getAsString());
-            player.setPet(json.get("Pet").getAsString());
-            player.setHasPet(json.get("hasPet").getAsBoolean());
-            player.setPetDamage(json.get("petDamage").getAsInt());
-            player.setPetEnergy(json.get("petEnergy").getAsInt());
+            
+            player.setPet(json.get("petType").getAsString(),json.get("hasPet").getAsBoolean(),json.get("petDamage").getAsInt(),json.get("petEnergy").getAsInt(), json.get("petHealth").getAsInt(), json.get("petName").getAsString()); 
+            /*
+            player.getPet().setPetType(json.get("petType").getAsString());
+            player.getPet().setHasPet(json.get("hasPet").getAsBoolean());
+            player.getPet().setPetDamage(json.get("petDamage").getAsInt());
+            player.getPet().setPetEnergy(json.get("petEnergy").getAsInt());
+            player.getPet().setPetHealth(json.get("petHealth").getAsInt());
+            player.getPet().setPetName(json.get("petName").getAsString());
+            */
+            
             player.setHealthMax(json.get("healthMax").getAsInt());
             player.setHealth(json.get("health").getAsInt());
             player.setmanaMax(json.get("manaMax").getAsInt());
@@ -182,7 +189,7 @@ public class Player extends Entity {
     // This is known as the singleton pattern. It allows for only 1 instance of a player.
     private static Player player;
     
-    public static Player getInstance(String playerClass,String playerRace, String playerPet){
+    public static Player getInstance(String playerClass,String playerRace, String playerPet, String selectedPetName){
         player = new Player();
         JsonParser parser = new JsonParser();
         String fileName = "json/original_data/npcs.json";
@@ -203,23 +210,22 @@ public class Player extends Entity {
                 player.setMana(0);
             }
             //pet start
-            player.setPet(playerPet);
-            if(playerPet.equalsIgnoreCase("Hawk")) {           	
-            	player.setPetDamage(10);
-            	player.setPetEnergy(10);
-            	player.setHasPet(true);
+            if(playerPet.equalsIgnoreCase("Hawk")) {   
+            	
+            	player.setPet("hawk",true,10,10,100, selectedPetName);
+            	           	
             }else if(playerPet.equalsIgnoreCase("Wolf")) {
-            	player.setPetDamage(11);
-            	player.setPetEnergy(10);
-            	player.setHasPet(true);
+            	
+            	player.setPet("wolf",true,11,10,100, selectedPetName);
+            	
             }else if(playerPet.equalsIgnoreCase("Leopard")) {
-            	player.setPetDamage(11);
-            	player.setPetEnergy(10);
-            	player.setHasPet(true);
+
+            	player.setPet("leopard",true,11,10,100, selectedPetName);
+            	
             }else {//might be, we can use boolean for this
-            	player.setPetDamage(0);
-            	player.setHasPet(false);
-            	player.setPetEnergy(0);
+            	
+            	player.setPet(null,false,0,0,0,null);
+            	
             }
             //pet end
             
@@ -322,10 +328,16 @@ public class Player extends Entity {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("name", getName());
         jsonObject.addProperty("Race", getRace());
-        jsonObject.addProperty("Pet", getPet());
-        jsonObject.addProperty("hasPet", getHasPet());
-        jsonObject.addProperty("petDamage", getPetDamage());
-        jsonObject.addProperty("petEnergy", getPetEnergy());
+        
+        //jsonObject.addProperty("playersPet", getPet());
+        
+        jsonObject.addProperty("petType", getPet().getPetType());
+        jsonObject.addProperty("hasPet", getPet().getHasPet());
+        jsonObject.addProperty("petDamage", getPet().getPetDamage());
+        jsonObject.addProperty("petEnergy", getPet().getPetEnergy());
+        jsonObject.addProperty("petHealth", getPet().getPetHealth());
+        jsonObject.addProperty("petName", getPet().getPetName());
+        
         jsonObject.addProperty("healthMax", getHealthMax());
         jsonObject.addProperty("health", getHealthMax());
         jsonObject.addProperty("manaMax", getmanaMax());
