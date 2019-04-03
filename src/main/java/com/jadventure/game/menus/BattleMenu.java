@@ -58,6 +58,7 @@ public class BattleMenu extends Menus {
             int newLevel = (int) (0.075 * Math.sqrt(this.player.getXP()) + 1);
             this.player.setLevel(newLevel);
             this.player.getPet().setPetEnergy(this.player.getPet().getPetEnergy()+1);
+            this.player.setMana(player.getMana()+10);
 
             // Iterates over the opponent's items and if there are any, drops them.
             // There are two loops due to a ConcurrentModification Exception that occurs
@@ -81,6 +82,7 @@ public class BattleMenu extends Menus {
             QueueProvider.offer("You killed a " + opponent.getName() +
                     "\nYou have gained " + xp + " XP and " +
                     opponent.getGold() + " gold");
+
             if (oldLevel < newLevel) {
             	this.player.getPet().setPetDamage(this.player.getPet().getPetDamage() + newLevel);
                 QueueProvider.offer("You've are now level " + newLevel + "!");
@@ -208,39 +210,86 @@ public class BattleMenu extends Menus {
     }
     
     private void skill(Entity attacker, Entity defender) {
-    	counter++;
     	boolean k = false;
+    	boolean mana = true;
     	String skill = "";
     	Scanner s = new Scanner(System.in);
     	int bonus = 0;
-    	QueueProvider.offer("Please choose a skill (1-4)");
+    	QueueProvider.offer("Please choose a skill (1-5)");
     	if(counter<4)
     	QueueProvider.offer("\nWarning you can only use 3 times in one combat.\nIf you use more than 3 times you will get more damage from the enemy.\n");
     	while(k == false) {   	
-    		System.out.println("[1] - Fire Ball (+9 Fire damage)");
-    		System.out.println("[2] - Lightning Bolt (+10 Lightning damage)");
-    		System.out.println("[3] - Darkness (+7 Dark damage)");
-    		System.out.println("[4] - Holy Light (+10 Holy damage)");
+    		System.out.println("[1] - Fire Ball (+9 Fire damage) (-5 mana)");
+    		System.out.println("[2] - Lightning Bolt (+10 Lightning damage) (-7 mana)");
+    		System.out.println("[3] - Darkness (+7 Dark damage) (-4 mana)");
+    		System.out.println("[4] - Holy Light (+10 Holy damage) (-7 mana)");
+    		System.out.println("[5] - Heal (+15-25 Heal) (-10 mana)");
 		 String pp = s.nextLine();
 		 if(pp.trim().equals("1")) {
+			 if(attacker.getMana() >= 5) {
 			 skill = "Fire Ball";
 			 k = true;
 			 bonus = 9;
+			 attacker.setMana(attacker.getMana()-5);
+			 }
+			 else {
+				 System.out.println("Not enought Mana");
+				mana = false; 
+				k= true;
+			 }
 		 }
 		 else if(pp.trim().equals("2")) {
+			 if(attacker.getMana() >= 7) {
 			 skill = "Lightning Bolt";
 			 k = true;
 			 bonus = 10;
+			 attacker.setMana(attacker.getMana()-7);
+			 }
+			 else {
+				mana = false;
+				k= true;
+				 System.out.println("Not enought Mana");
+			 }
 		 }
 			 else if(pp.trim().equals("3")) {
+				 if(attacker.getMana() >= 4) {		 
 				 skill = "Darkness";
 				 k = true;
 				 bonus = 7;
+				 attacker.setMana(attacker.getMana()-4);
+				 }
+				 else {
+					 System.out.println("Not enought Mana");
+					mana = false; 
+					k= true;
+				 }
 			 }
 				 else if(pp.trim().equals("4")) {
+					 if(attacker.getMana() >= 7) {				 
 					 skill = "Holy Light";
 					 k = true;
 					 bonus = 10;
+					 attacker.setMana(attacker.getMana()-7);
+					 }
+					 else {
+						 System.out.println("Not enought Mana");
+						mana = false;
+						k= true;
+					 }
+				 }
+				 else if(pp.trim().equals("5")) {
+					 if(attacker.getMana() >= 10) {			 
+					 skill = "Heal";
+					 k = true;
+					 bonus = 15+(int)(Math.random()*10);
+					 attacker.setMana(attacker.getMana()-10);
+					 }
+					 else {
+						 System.out.println("Not enought Mana");
+					 mana = false;
+					 k= true;
+					 
+					 }
 				 }
 				 else {
 					 System.out.println("Wrong input.  Please write a number between 1 and 4 \n");
@@ -250,6 +299,8 @@ public class BattleMenu extends Menus {
         if (attacker.getHealth() == 0) {
             return;
         }
+        if(!skill.equals("Heal") && mana == true) {
+        	counter++;
         double damage = attacker.getDamage();
         double critCalc = random.nextDouble();
         if (critCalc < attacker.getCritChance()) {
@@ -264,11 +315,24 @@ public class BattleMenu extends Menus {
             defender.setHealth(0);
         }
         QueueProvider.offer(healthReduction + " damage dealt! by " + skill);
+        
+   
         if (attacker instanceof Player) {
             QueueProvider.offer("The " + defender.getName() + "'s health is " +
                     defender.getHealth());
         } else {
             QueueProvider.offer("Your health is " + defender.getHealth());
+        }
+        }
+        else if (mana == true) {
+        	counter++;
+            QueueProvider.offer("You healed yourself with " + skill + " +" + bonus + " Health");
+            attacker.setHealth(attacker.getHealth()+bonus);
+            }
+        else {
+        	
+        	QueueProvider.offer("You attack normally");
+        	attack(attacker,defender);
         }
     }
     //attack with pet starts

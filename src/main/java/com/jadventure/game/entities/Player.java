@@ -207,7 +207,7 @@ public class Player extends Entity {
                 player.setMana(100);
             } 
             else {
-                player.setMana(0);
+                player.setMana(100);
             }
             //pet start
             if(playerPet.equalsIgnoreCase("Hawk")) {   

@@ -93,9 +93,7 @@ public abstract class Entity {
         if (mana > manaMax){
             mana = manaMax;
         }
-        if ( Race.equals("Wizard")) {
-            this.mana = mana;
-        }
+            this.mana = mana;          
     }
     
     public boolean useMana(int amount) {
