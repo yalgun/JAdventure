@@ -30,7 +30,7 @@ public class PlayerTest {
         assertEquals("Failure - new sewer rat not properly created", expected, actual);
     }
 
-   // @Test
+    @Test
     public void oldPlayer() {
         Player player = Player.load("test");
         String expected = "test";
